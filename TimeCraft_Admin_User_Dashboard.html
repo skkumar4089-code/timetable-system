@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TimeCraft — Timetable Workspace</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--ink:#182230;--muted:#667085;--line:#e7ebf2;--brand:#5b5ce2;--brand2:#7778f5;--soft:#f0f0ff;--green:#16845b;--amber:#b7791f;--red:#c2414b;--shadow:0 10px 30px rgba(25,35,65,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,Segoe UI,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.sidebar{background:#171a2b;color:#e8eaff;padding:22px 14px;display:flex;flex-direction:column;gap:24px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brand-mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#7778ff,#5555d7);display:grid;place-items:center;font-size:20px;font-weight:800;color:#fff}.brand strong{display:block;font-size:17px;letter-spacing:-.3px}.brand small{color:#a9acc7;font-size:11px}.nav-label{padding:0 12px;color:#8e93b4;font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:7px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#c7c9de;text-align:left;padding:11px 12px;border-radius:11px;display:flex;align-items:center;gap:12px;transition:.18s}.nav button:hover{background:#252941;color:#fff}.nav button.active{background:#35365d;color:#fff;box-shadow:inset 3px 0 #8c8dff}.nav .ico{width:22px;text-align:center;font-size:16px}.side-bottom{margin-top:auto;padding:14px;border:1px solid #343750;border-radius:14px;background:#202338}.side-bottom strong{display:block;font-size:12px;margin-bottom:4px}.side-bottom p{margin:0;color:#aeb2ce;font-size:11px}
+main{min-width:0}.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:16px}.top-left{display:flex;align-items:center;gap:12px}.mobile-menu{display:none}.eyebrow{font-size:11px;color:var(--muted);margin-bottom:2px}.topbar h1{font-size:21px;margin:0;letter-spacing:-.6px}.top-actions{display:flex;gap:9px;align-items:center}.avatar{width:35px;height:35px;border-radius:50%;background:#e7e7ff;color:#4b4cc7;display:grid;place-items:center;font-weight:800}
+.content{max-width:1500px;padding:28px 32px 44px;margin:auto}.page{display:none}.page.active{display:block}.page-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}.page-heading h2{font-size:24px;letter-spacing:-.7px;margin:0 0 5px}.page-heading p{margin:0;color:var(--muted)}.btn{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:#fff;color:#344054;font-weight:650;display:inline-flex;align-items:center;gap:8px;justify-content:center;transition:.15s}.btn:hover{transform:translateY(-1px);box-shadow:0 5px 14px #20204010}.btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}.btn.primary:hover{background:#4d4ed1}.btn.soft{background:var(--soft);border-color:#e1e1ff;color:#4f50c8}.btn.danger{color:var(--red);background:#fff8f8;border-color:#f4d7d9}.btn.small{padding:7px 10px;font-size:12px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.stat{padding:18px;display:flex;align-items:center;gap:13px}.stat-icon{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:#efefff;color:#5b5ce2}.stat:nth-child(2) .stat-icon{background:#e7f8ef;color:#16845b}.stat:nth-child(3) .stat-icon{background:#fff4df;color:#b7791f}.stat:nth-child(4) .stat-icon{background:#eaf4ff;color:#2876bc}.stat .num{font-size:25px;font-weight:800;line-height:1.2;letter-spacing:-.7px}.stat .label{color:var(--muted);font-size:12px;margin-top:4px}.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.9fr);gap:18px}.card-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.card-head h3{font-size:15px;margin:0}.card-body{padding:18px 20px}.muted{color:var(--muted)}.quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.quick-action{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fff;text-align:left;display:flex;gap:11px;align-items:center}.quick-action:hover{border-color:#c9c9ff;background:#fafaff}.quick-action .qico{width:38px;height:38px;border-radius:11px;background:var(--soft);display:grid;place-items:center;font-size:17px}.quick-action strong{display:block;font-size:12px}.quick-action small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#475467}.field input,.field select,.field textarea,.search{width:100%;border:1px solid #dfe3ec;background:#fff;border-radius:10px;padding:10px 12px;outline:none;color:var(--ink)}.field input:focus,.field select:focus,.field textarea:focus,.search:focus{border-color:#898aff;box-shadow:0 0 0 3px #6869ed18}.search-wrap{flex:1;min-width:210px}.search{min-width:220px}.view-toggle{display:flex;background:#f0f1f6;border-radius:10px;padding:3px}.view-toggle button{border:0;background:transparent;padding:7px 11px;border-radius:8px;color:#667085}.view-toggle button.active{background:#fff;color:#202939;box-shadow:0 1px 4px #00000010}.timetable-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.day-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0}.day-head{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:#fafbfe;border-bottom:1px solid var(--line);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}.count{font-size:10px;background:#eceeff;color:#5556c8;padding:3px 7px;border-radius:20px}.day-items{padding:10px;display:grid;gap:9px;align-content:start;min-height:80px}.empty-day{text-align:center;color:#98a2b3;font-size:12px;padding:20px 4px}.entry{border:1px solid #dedfff;background:#f7f7ff;border-left:3px solid #6667e8;padding:10px;border-radius:10px;min-width:0}.entry.emerald{background:#f0fbf5;border-color:#d1f0df;border-left-color:#20a36b}.entry.amber{background:#fff9eb;border-color:#f8e8bd;border-left-color:#d89b22}.entry.purple{background:#faf5ff;border-color:#ead7ff;border-left-color:#9662db}.entry.cyan{background:#effbff;border-color:#d1f1f8;border-left-color:#209bb7}.entry.rose{background:#fff4f5;border-color:#f6d9dd;border-left-color:#d85b6b}.entry h4{font-size:12px;margin:0 0 7px;overflow-wrap:anywhere}.entry p{margin:3px 0;color:#667085;font-size:10px;overflow-wrap:anywhere}.entry-actions{display:flex;gap:5px;margin-top:8px}.entry-actions button{border:1px solid #e1e3ed;background:#fff;border-radius:7px;padding:4px 7px;font-size:10px;color:#4b5565}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:680px}.table th,.table td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line);font-size:12px}.table th{background:#fafbfe;color:#667085;text-transform:uppercase;letter-spacing:.5px;font-size:10px}.table tr:last-child td{border-bottom:0}.table td strong{font-size:12px}.pill{display:inline-block;border-radius:20px;background:#f0f0ff;color:#5556c8;padding:4px 8px;font-size:10px;font-weight:700}.empty-state{padding:42px 20px;text-align:center;color:var(--muted)}.empty-state .big{font-size:30px;margin-bottom:8px}
+.form-card{max-width:850px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.form-grid .wide{grid-column:1/-1}.form-footer{display:flex;justify-content:flex-end;gap:10px;padding-top:18px;border-top:1px solid var(--line);margin-top:20px}.notice{padding:13px 15px;border-radius:11px;background:#fff8e8;border:1px solid #f4e1b1;color:#855b10;font-size:12px;margin-bottom:16px}.notice.info{background:#f0f5ff;border-color:#dce6ff;color:#34599a}.ai-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.ai-card{padding:22px}.ai-card .ai-symbol{width:48px;height:48px;border-radius:14px;background:#efefff;color:#5b5ce2;display:grid;place-items:center;font-size:22px;margin-bottom:14px}.ai-card h3{margin:0 0 6px}.ai-card p{color:var(--muted);font-size:12px;margin:0 0 17px}.ai-card textarea{min-height:130px;resize:vertical}.result-box{white-space:pre-wrap;background:#f8f9fc;border:1px solid var(--line);border-radius:12px;padding:15px;margin-top:14px;font-size:12px;display:none}.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.report-card{padding:20px}.report-card h3{margin:0 0 5px}.report-card p{color:var(--muted);font-size:12px}.bar-list{display:grid;gap:12px;margin-top:18px}.bar-row{display:grid;grid-template-columns:95px 1fr 25px;gap:10px;align-items:center;font-size:12px}.bar{height:8px;background:#eeeff5;border-radius:20px;overflow:hidden}.bar span{display:block;height:100%;background:var(--brand);border-radius:20px}.settings-list{display:grid;gap:12px}.setting-row{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border:0}.setting-row strong{display:block;font-size:13px}.setting-row small{display:block;color:var(--muted);margin-top:3px}.footer-note{font-size:11px;color:var(--muted);margin-top:20px}.toast{position:fixed;right:22px;bottom:22px;background:#202338;color:#fff;padding:12px 16px;border-radius:11px;box-shadow:var(--shadow);z-index:100;display:none;max-width:calc(100vw - 44px)}.modal-backdrop{position:fixed;inset:0;background:#11182788;display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal{background:#fff;border-radius:18px;padding:22px;width:min(540px,100%);max-height:90vh;overflow:auto;box-shadow:0 25px 70px #0003}.modal h3{margin:0 0 15px}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
+.about-hero{background:linear-gradient(135deg,#fff,#f4f4ff);border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:16px}.about-hero .brand-mark{margin-bottom:16px}.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}.feature-tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:7px}.feature-tile p{margin:0;color:var(--muted);font-size:12px}.support-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.8fr);gap:18px}.support-card{padding:20px}.support-card h3{margin:0 0 8px}.support-card p{color:var(--muted);font-size:12px}.support-form{display:grid;gap:14px}.support-status{display:none;margin-top:12px;padding:12px;border-radius:10px;background:#eefbf4;color:#176747;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:1200px){.timetable-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;z-index:40;left:-270px;top:0;bottom:0;width:248px;transition:left .2s;box-shadow:20px 0 50px #0002}.sidebar.open{left:0}.mobile-menu{display:inline-flex}.topbar{padding:0 18px}.content{padding:22px 18px 35px}.dashboard-grid{grid-template-columns:1fr}.timetable-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top-actions .hide-small{display:none}}
+@media(max-width:600px){.feature-grid,.support-layout{grid-template-columns:1fr}.topbar{height:68px}.topbar h1{font-size:17px}.content{padding:18px 12px 30px}.page-heading{flex-direction:column}.page-heading h2{font-size:21px}.stats{gap:9px}.stat{padding:13px;gap:9px}.stat-icon{width:36px;height:36px}.stat .num{font-size:21px}.stat .label{font-size:10px}.timetable-grid,.ai-grid,.report-grid,.form-grid{grid-template-columns:1fr}.form-grid .wide{grid-column:auto}.quick-actions{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar>*{width:100%}.search{min-width:0}.view-toggle{width:max-content}.card-head,.card-body{padding:15px}.top-actions{gap:5px}.top-actions .btn{padding:8px 10px;font-size:12px}.avatar{display:none}}
+@media print{.sidebar,.topbar,.no-print,.toolbar,.page-heading .btn{display:none!important}.app{display:block}.content{max-width:none;padding:0}.page{display:none!important}#page-timetable{display:block!important}.card,.day-card{box-shadow:none;break-inside:avoid}.timetable-grid{grid-template-columns:repeat(3,minmax(0,1fr))}body{background:#fff}}
+
+.auth-layer{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#f5f7fb,#ececff);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.auth-card{width:min(440px,100%);background:#fff;border:1px solid #e7ebf2;border-radius:20px;padding:26px;box-shadow:0 20px 60px #19234118}
+.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:20px}.auth-logo .brand-mark{flex-shrink:0}
+.auth-card h2{font-size:24px;letter-spacing:-.6px;margin:0 0 5px}.auth-sub{color:#667085;margin:0 0 18px;font-size:13px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.auth-tabs button{border:1px solid #e7ebf2;border-radius:10px;padding:10px;background:#f8f9fc;color:#475467;font-weight:700}
+.auth-tabs button.active{background:#5b5ce2;color:white;border-color:#5b5ce2}
+.auth-fields{display:grid;gap:12px}.auth-fields .field input{padding:12px}
+.auth-error{font-size:12px;color:#c2414b;min-height:18px;margin-top:10px}
+.auth-note{margin-top:14px;padding:11px;border-radius:10px;background:#fff8e8;border:1px solid #f4e1b1;color:#855b10;font-size:11px;line-height:1.6}
+.role-chip{font-size:10px;font-weight:800;letter-spacing:.4px;border-radius:20px;padding:5px 9px;background:#efefff;color:#5556c8}
+@media(max-width:500px){.auth-card{padding:20px}.auth-card h2{font-size:21px}}
+
+</style>
+</head>
+<body>
+
+<div class="auth-layer" id="authLayer">
+  <section class="auth-card">
+    <div class="auth-logo"><div class="brand-mark">T</div><div><strong style="font-size:18px;display:block">TimeCraft</strong><small class="muted">Timetable workspace</small></div></div>
+    <h2 id="authHeading">Admin Login</h2>
+    <p class="auth-sub" id="authSub">Sign in with the fixed administrator account.</p>
+    <div class="auth-tabs">
+      <button type="button" id="authAdminTab" class="active">Admin Login</button>
+      <button type="button" id="authUserTab">User Login</button>
+    </div>
+    <div class="auth-tabs" id="userAuthModes" style="display:none;margin-top:-6px">
+      <button type="button" id="authLoginMode" class="active">User Login</button>
+      <button type="button" id="authRegisterMode">Register</button>
+    </div>
+    <form id="authPanelForm" class="auth-fields">
+      <div class="field"><label for="authUsername">Username</label><input id="authUsername" required minlength="3" maxlength="30" autocomplete="username" placeholder="Enter username"></div>
+      <div class="field" id="authNameField" style="display:none"><label for="authFullName">Full name</label><input id="authFullName" maxlength="80" autocomplete="name" placeholder="Enter your full name"></div>
+      <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="Enter password"></div>
+      <div class="field" id="authConfirmField" style="display:none"><label for="authConfirmPassword">Confirm password</label><input id="authConfirmPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Re-enter password"></div>
+      <button class="btn primary" id="authSubmitBtn" type="submit">Login as Admin</button>
+    </form>
+    <div class="auth-error" id="authError" role="status"></div>
+    <div class="auth-note"><strong>Local demo notice:</strong> Accounts are stored in this browser only. The fixed admin password is in this HTML source, so this is not secure for public or multi-user deployment.</div>
+  </section>
+</div>
+
+<div class="app" id="timeCraftApp" style="display:none">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-mark">T</div><div><strong>TimeCraft</strong><small>Timetable workspace</small></div></div>
+  <div><div class="nav-label">Workspace</div><nav class="nav" id="mainNav">
+    <button class="active" data-page="dashboard"><span class="ico">▦</span>Dashboard</button>
+    <button data-page="timetable"><span class="ico">▤</span>Timetable</button>
+    <button data-page="add"><span class="ico">＋</span>Add class / task</button>
+  </nav></div>
+  <div><div class="nav-label">Smart tools</div><nav class="nav">
+    <button data-page="ai-generate"><span class="ico">✧</span>AI Auto-Generate</button>
+    <button data-page="ai-review"><span class="ico">◈</span>AI Review & Advice</button>
+    <button data-page="reports"><span class="ico">▥</span>Reports & Export</button>
+  </nav></div>
+  <div><div class="nav-label">Manage</div><nav class="nav">
+    <button data-page="settings"><span class="ico">⚙</span>Settings & data</button>
+    <button data-page="about"><span class="ico">ⓘ</span>About TimeCraft</button>
+    <button data-page="support"><span class="ico">✉</span>Help & Report a problem</button>
+  </nav></div>
+  <div class="side-bottom"><strong>✦ Stay organized</strong><p>Your classes, study sessions and tasks in one simple workspace.</p></div>
+</aside>
+<main>
+<header class="topbar">
+  <div class="top-left"><button class="btn mobile-menu" id="menuBtn" aria-label="Open navigation">☰</button><div><div class="eyebrow">YOUR WEEK, ORGANIZED</div><h1 id="topTitle">Dashboard</h1></div></div>
+  <div class="top-actions"><button class="btn hide-small" id="topExport">⇩ Export / Print</button><button class="btn primary" id="topAdd">＋ Add entry</button><span class="role-chip" id="currentRoleChip">ADMIN</span><button class="btn small" id="authLogoutBtn" type="button">Log out</button><div class="avatar" id="currentAvatar">TC</div></div>
+</header>
+<div class="content">
+<section class="page active" id="page-dashboard">
+  <div class="page-heading"><div><h2>Good to see you 👋</h2><p>Here’s a quick overview of your weekly schedule.</p></div><button class="btn primary" data-goto="add">＋ Create new entry</button></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-icon">▤</div><div><div class="num" id="statTotal">0</div><div class="label">Scheduled entries</div></div></div>
+    <div class="stat"><div class="stat-icon">◷</div><div><div class="num" id="statHours">0h</div><div class="label">Planned hours / week</div></div></div>
+    <div class="stat"><div class="stat-icon">▦</div><div><div class="num" id="statDays">0</div><div class="label">Days with activities</div></div></div>
+    <div class="stat"><div class="stat-icon">✓</div><div><div class="num" id="statToday">0</div><div class="label">Entries today</div></div></div>
+  </div>
+  <div class="dashboard-grid">
+    <div class="card"><div class="card-head"><h3>Upcoming schedule overview</h3><button class="btn small" data-goto="timetable">View timetable →</button></div><div class="card-body"><div id="dashboardSchedule"></div></div></div>
+    <div class="card"><div class="card-head"><h3>Quick actions</h3></div><div class="card-body"><div class="quick-actions">
+      <button class="quick-action" data-goto="add"><span class="qico">＋</span><span><strong>Add class or task</strong><small>Create a schedule entry</small></span></button>
+      <button class="quick-action" data-goto="ai-generate"><span class="qico">✧</span><span><strong>Generate with AI</strong><small>Turn text into a timetable</small></span></button>
+      <button class="quick-action" data-goto="ai-review"><span class="qico">◈</span><span><strong>Review schedule</strong><small>Get workload tips</small></span></button>
+      <button class="quick-action" data-goto="reports"><span class="qico">⇩</span><span><strong>Export / print</strong><small>Print or save as PDF</small></span></button>
+    </div></div></div>
+  </div>
+</section>
+
+<section class="page" id="page-timetable">
+  <div class="page-heading"><div><h2>Weekly timetable</h2><p>Search, filter, switch views, edit or remove entries.</p></div><button class="btn primary" data-goto="add">＋ Add entry</button></div>
+  <div class="toolbar no-print"><div class="search-wrap"><input class="search" id="searchInput" placeholder="⌕  Search subject, room or teacher…"></div><select class="search" id="dayFilter" style="max-width:170px"><option value="All">All days</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select><div class="view-toggle"><button class="active" id="gridBtn">▦ Grid</button><button id="listBtn">☷ List</button></div></div>
+  <div class="card"><div class="card-head"><h3 id="timetableLabel">All entries</h3><span class="muted" id="entryCount">0 entries</span></div><div class="card-body" id="gridWrap"><div class="timetable-grid" id="weeklyGrid"></div></div><div class="table-wrap" id="listWrap" style="display:none"><table class="table"><thead><tr><th>Day</th><th>Time</th><th>Subject / task</th><th>Room</th><th>Teacher</th><th class="no-print">Actions</th></tr></thead><tbody id="listBody"></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-add">
+  <div class="page-heading"><div><h2 id="formHeading">Add class or task</h2><p>Keep all details together so your timetable stays clear.</p></div></div>
+  <div class="card form-card"><div class="card-head"><h3>Entry details</h3><span class="muted">Fields marked * are required</span></div><div class="card-body">
+    <form id="entryForm"><input type="hidden" id="entryId"><div class="form-grid">
+      <div class="field wide"><label for="subjectName">Subject / task name *</label><input id="subjectName" required maxlength="120" placeholder="e.g. Data Structures"></div>
+      <div class="field"><label for="entryDay">Day *</label><select id="entryDay" required><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></div>
+      <div class="field"><label for="entryColor">Color label</label><select id="entryColor"><option value="indigo">Indigo</option><option value="emerald">Emerald</option><option value="amber">Amber</option><option value="purple">Purple</option><option value="cyan">Cyan</option><option value="rose">Rose</option></select></div>
+      <div class="field"><label for="startTime">Start time *</label><input type="time" id="startTime" required value="09:00"></div>
+      <div class="field"><label for="endTime">End time *</label><input type="time" id="endTime" required value="10:00"></div>
+      <div class="field"><label for="roomLocation">Room / venue</label><input id="roomLocation" maxlength="80" placeholder="e.g. Lab 2"></div>
+      <div class="field"><label for="teacherNotes">Teacher / instructor</label><input id="teacherNotes" maxlength="80" placeholder="e.g. Prof. Sharma"></div>
+    </div><div class="form-footer"><button type="button" class="btn" id="cancelForm">Cancel</button><button type="submit" class="btn primary">✓ Save entry</button></div></form>
+  </div></div>
+</section>
+
+<section class="page" id="page-ai-generate">
+  <div class="page-heading"><div><h2>AI Auto-Generate</h2><p>Describe your routine in plain language and turn it into schedule entries.</p></div></div>
+  <div class="notice">AI note: this feature requires a configured Gemini API key and a secure backend. Never put a private API key directly in a public HTML file.</div>
+  <div class="ai-grid"><div class="card ai-card"><div class="ai-symbol">✧</div><h3>Describe your routine</h3><p>Write your weekly classes, study blocks or tasks in Hindi or English.</p><div class="field"><label for="aiPromptInput">Schedule prompt</label><textarea id="aiPromptInput" placeholder="Example: Monday to Friday, 9 AM to 10 AM Maths, 10:30 AM to 12 PM Java in Lab 2. Saturday 11 AM self-study."></textarea></div><div style="margin-top:14px"><button class="btn primary" id="generateBtn">✦ Generate timetable</button></div><div class="result-box" id="generateResult"></div></div>
+  <div class="card ai-card"><div class="ai-symbol">◎</div><h3>What happens next?</h3><p>Your prompt should be converted into structured entries with a day, start time, end time and subject.</p><ul class="muted" style="padding-left:18px;font-size:12px;line-height:2"><li>Entries are checked before saving.</li><li>Existing timetable items are kept.</li><li>You can edit generated items any time.</li><li>API requests should be handled by a backend server.</li></ul></div></div>
+</section>
+
+<section class="page" id="page-ai-review">
+  <div class="page-heading"><div><h2>AI Review & Advice</h2><p>Review your workload and spot schedule gaps.</p></div><button class="btn primary" id="reviewBtn">◈ Review schedule</button></div>
+  <div class="ai-grid"><div class="card ai-card"><div class="ai-symbol">◈</div><h3>Schedule insights</h3><p>Run a local review of your current timetable for total hours, busy days and possible time conflicts.</p><button class="btn soft" id="localReviewBtn">Run schedule check</button><div class="result-box" id="reviewResult"></div></div><div class="card ai-card"><div class="ai-symbol">✧</div><h3>AI productivity advice</h3><p>Personalized AI advice needs a securely configured AI backend. The local schedule check works without an API key.</p><div class="notice info">This prototype does not pretend a local rule-based check is a live AI response.</div></div></div>
+</section>
+
+<section class="page" id="page-reports">
+  <div class="page-heading"><div><h2>Reports & Export</h2><p>Get a quick summary or print the weekly timetable.</p></div><button class="btn primary" id="printBtn">⇩ Print / Save PDF</button></div>
+  <div class="report-grid"><div class="card report-card"><h3>Weekly summary</h3><p>Current schedule totals calculated from your saved entries.</p><div class="bar-list" id="dayBars"></div></div><div class="card report-card"><h3>Data export</h3><p>Download your timetable as a JSON backup so you can move it to another browser or keep a copy.</p><div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:16px"><button class="btn primary" id="downloadJson">⇩ Download JSON backup</button><button class="btn" id="downloadCsv">⇩ Download CSV</button></div></div></div>
+</section>
+
+<section class="page" id="page-settings">
+  <div class="page-heading"><div><h2>Settings & data</h2><p>Manage saved timetable data and basic preferences.</p></div></div>
+  <div class="card"><div class="card-head"><h3>Data management</h3></div><div class="card-body settings-list">
+    <div class="setting-row"><div><strong>Saved entries</strong><small id="savedCount">Your entries are saved in this browser using local storage.</small></div><button class="btn" id="exportFromSettings">Export backup</button></div>
+    <div class="setting-row"><div><strong>Import JSON backup</strong><small>Restore entries from a TimeCraft JSON backup file.</small></div><label class="btn" for="importFile">Choose file<input id="importFile" type="file" accept=".json,application/json" hidden></label></div>
+    <div class="setting-row"><div><strong>Clear all timetable entries</strong><small>This removes saved entries from this browser. Export a backup first if needed.</small></div><button class="btn danger" id="clearAllBtn">Clear all</button></div>
+  </div></div><p class="footer-note">Privacy: timetable data stays in your browser unless you add external services yourself.</p>
+</section>
+
+<section class="page" id="page-about">
+  <div class="page-heading"><div><h2>About TimeCraft</h2><p>A little context about this timetable workspace.</p></div><button class="btn" data-goto="support">✉ Get help</button></div>
+  <div class="about-hero"><div class="brand-mark">T</div><h2 style="margin:0 0 8px;font-size:26px">Plan your week. Make room to grow.</h2><p style="max-width:650px;color:#5d6380;margin:0">TimeCraft is a simple timetable management workspace for organizing classes, study sessions and personal tasks in one place. It brings scheduling, review tools and data backup together in a clear interface.</p></div>
+  <div class="feature-grid">
+    <div class="feature-tile"><span style="font-size:22px">▦</span><strong>Organized schedule</strong><p>Keep your week easy to scan with grid and list views.</p></div>
+    <div class="feature-tile"><span style="font-size:22px">✧</span><strong>Smart tools</strong><p>Use schedule prompts and workload checks where supported.</p></div>
+    <div class="feature-tile"><span style="font-size:22px">🔒</span><strong>Local-first data</strong><p>Schedule entries are stored in this browser by default.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-head"><h3>What to know</h3></div><div class="card-body"><p class="muted" style="margin-top:0">This is a browser-based project. AI generation and remote support are not automatically connected; they require a backend or a real support channel. Export a JSON backup before clearing browser data or switching devices.</p><button class="btn primary" data-goto="support">Report a problem →</button></div></div>
+</section>
+
+<section class="page" id="page-support">
+  <div class="page-heading"><div><h2>Help & report a problem</h2><p>Share what went wrong so the issue can be understood and fixed.</p></div></div>
+  <div class="support-layout">
+    <div class="card support-card"><h3>Report an issue</h3><p>Describe the problem and include the steps that led to it. This demo creates a report draft in your browser; it does not send it to a support team.</p>
+      <form class="support-form" id="supportForm">
+        <div class="field"><label for="reportType">Problem category *</label><select id="reportType" required><option value="">Choose a category</option><option>Bug / feature not working</option><option>AI Auto-Generate</option><option>AI Review & Advice</option><option>Data lost or not saving</option><option>UI / display issue</option><option>Suggestion / feature request</option><option>Other</option></select></div>
+        <div class="field"><label for="reportTitle">Short title *</label><input id="reportTitle" required maxlength="100" placeholder="e.g. Save button does not work"></div>
+        <div class="field"><label for="reportDetails">What happened? *</label><textarea id="reportDetails" required maxlength="2000" placeholder="What did you expect, what happened instead, and what steps reproduce it?"></textarea></div>
+        <div class="field"><label for="reportContact">Contact (optional)</label><input id="reportContact" maxlength="120" placeholder="Email, only if you want it in the draft"></div>
+        <div class="field"><label><input id="includeTechInfo" type="checkbox" checked style="width:auto;margin-right:7px">Include browser and page details in the report</label></div>
+        <button class="btn primary" type="submit">Create report draft</button>
+      </form>
+      <div class="support-status" id="reportStatus" role="status"></div>
+      <div id="reportActions" style="display:none;gap:9px;flex-wrap:wrap;margin-top:12px"><button class="btn primary" id="downloadReport">⇩ Download report</button><button class="btn" id="copyReport">Copy report text</button></div>
+    </div>
+    <div style="display:grid;gap:16px;align-content:start">
+      <div class="card support-card"><h3>Before reporting</h3><p>These details help someone reproduce the issue.</p><ul class="muted" style="padding-left:18px;font-size:12px;line-height:2"><li>Which section were you using?</li><li>What did you click or type?</li><li>What did you expect to happen?</li><li>What actually happened?</li></ul></div>
+      <div class="card support-card"><h3>Need help quickly?</h3><p>Take a screenshot with <strong>Win + Shift + S</strong> and attach it when you share the report with the project owner.</p><div class="notice info">No report is sent automatically. Use Download report to save it, then share it through your chosen support channel.</div></div>
+    </div>
+  </div>
+</section>
+</div>
+</main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div class="modal-backdrop" id="confirmBackdrop"><div class="modal"><h3 id="confirmTitle">Are you sure?</h3><p id="confirmMessage" class="muted">This action cannot be undone.</p><div class="modal-actions"><button class="btn" id="confirmCancel">Cancel</button><button class="btn danger" id="confirmYes">Confirm</button></div></div></div>
+<script>
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const STORAGE_KEY='timecraft_timetable_data_v2';
+const oldKey='timecraft_timetable_data';
+let currentView='grid', pendingConfirm=null;
+const defaultTimetable=[
+{id:'1',subject:'Mathematics 101',day:'Monday',startTime:'09:00',endTime:'10:30',room:'Room 201',teacher:'Dr. Sharma',color:'indigo'},
+{id:'2',subject:'Physics Lab',day:'Monday',startTime:'11:00',endTime:'13:00',room:'Lab B',teacher:'Prof. Verma',color:'purple'},
+{id:'3',subject:'Computer Networks',day:'Tuesday',startTime:'10:00',endTime:'11:30',room:'Room 105',teacher:'Er. Gupta',color:'emerald'},
+{id:'4',subject:'Data Structures',day:'Wednesday',startTime:'09:00',endTime:'10:30',room:'Room 304',teacher:'Dr. Kapoor',color:'cyan'},
+{id:'5',subject:'English Communication',day:'Thursday',startTime:'14:00',endTime:'15:30',room:'Hall A',teacher:'Ms. Anita',color:'amber'}];
+function safeLoad(){try{const current=window.localStorage ? window.localStorage.getItem(STORAGE_KEY) : null;if(current)return validateEntries(JSON.parse(current));const old=window.localStorage ? window.localStorage.getItem(oldKey) : null;return old?validateEntries(JSON.parse(old)):defaultTimetable.map(x=>({...x}));}catch(e){console.warn('Local storage unavailable; using in-memory data.',e);return defaultTimetable.map(x=>({...x}));}}
+function validTime(value){if(typeof value!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(value))return false;return true;}
+function validateEntries(data){
+  if(!Array.isArray(data))throw new Error('Invalid backup');
+  const seen=new Set(),out=[];
+  for(const x of data){
+    if(!x||typeof x!=='object'||typeof x.subject!=='string'||!x.subject.trim()||!DAYS.includes(x.day)||!validTime(x.startTime)||!validTime(x.endTime)||x.startTime>=x.endTime)continue;
+    let id=String(x.id||`${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    if(seen.has(id))id=`${id}-${Math.random().toString(36).slice(2,7)}`;
+    seen.add(id);
+    out.push({id,subject:x.subject.trim().slice(0,120),day:x.day,startTime:x.startTime,endTime:x.endTime,room:String(x.room||'').slice(0,80),teacher:String(x.teacher||'').slice(0,80),color:['indigo','emerald','amber','purple','cyan','rose'].includes(x.color)?x.color:'indigo'});
+  }
+  return out;
+}
+let timetableData=safeLoad();
+function saveData(){let saved=false;try{window.localStorage.setItem(STORAGE_KEY,JSON.stringify(timetableData));saved=true;}catch(e){console.warn('Could not save to local storage.',e);}renderAll();if(!saved)toast('Changes work for this session only; browser storage is unavailable.');}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmt(t){const [hh,mm]=t.split(':').map(Number);return `${hh%12||12}:${String(mm).padStart(2,'0')} ${hh>=12?'PM':'AM'}`;}
+function minutes(t){const [h,m]=t.split(':').map(Number);return h*60+m;}
+function duration(x){return (minutes(x.endTime)-minutes(x.startTime))/60;}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.style.display='none',2800);}
+function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));const names={dashboard:'Dashboard',timetable:'Timetable',add:'Add class / task','ai-generate':'AI Auto-Generate','ai-review':'AI Review & Advice',reports:'Reports & Export',settings:'Settings & data',about:'About TimeCraft',support:'Help & Report a problem'};document.getElementById('topTitle').textContent=names[page]||'TimeCraft';document.getElementById('sidebar').classList.remove('open');if(page==='timetable')renderTimetable();if(page==='reports')renderReports();if(page==='settings')document.getElementById('savedCount').textContent=`${timetableData.length} entries saved in this browser using local storage.`;window.scrollTo({top:0,behavior:'smooth'});}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
+document.getElementById('topAdd').addEventListener('click',()=>{resetForm();go('add');});
+document.getElementById('topExport').addEventListener('click',()=>go('reports'));
+document.getElementById('searchInput').addEventListener('input',renderTimetable);
+document.getElementById('dayFilter').addEventListener('change',renderTimetable);
+document.getElementById('gridBtn').addEventListener('click',()=>setView('grid'));
+document.getElementById('listBtn').addEventListener('click',()=>setView('list'));
+function setView(v){currentView=v;document.getElementById('gridBtn').classList.toggle('active',v==='grid');document.getElementById('listBtn').classList.toggle('active',v==='list');document.getElementById('gridWrap').style.display=v==='grid'?'block':'none';document.getElementById('listWrap').style.display=v==='list'?'block':'none';renderTimetable();}
+function getFiltered(){const q=document.getElementById('searchInput').value.trim().toLowerCase(),day=document.getElementById('dayFilter').value;return timetableData.filter(x=>(day==='All'||x.day===day)&&[x.subject,x.room,x.teacher].some(v=>String(v||'').toLowerCase().includes(q)));}
+function renderTimetable(){const data=getFiltered();document.getElementById('entryCount').textContent=`${data.length} ${data.length===1?'entry':'entries'}`;document.getElementById('timetableLabel').textContent=document.getElementById('dayFilter').value==='All'?'All entries':document.getElementById('dayFilter').value;const activeDays=document.getElementById('dayFilter').value==='All'?DAYS:[document.getElementById('dayFilter').value];document.getElementById('weeklyGrid').innerHTML=activeDays.map(day=>{const items=data.filter(x=>x.day===day).sort((a,b)=>a.startTime.localeCompare(b.startTime));return `<div class="day-card"><div class="day-head">${day}<span class="count">${items.length}</span></div><div class="day-items">${items.length?items.map(x=>`<article class="entry ${esc(x.color)}"><h4>${esc(x.subject)}</h4><p>◷ ${fmt(x.startTime)} – ${fmt(x.endTime)}</p>${x.room?`<p>⌖ ${esc(x.room)}</p>`:''}${x.teacher?`<p>♙ ${esc(x.teacher)}</p>`:''}<div class="entry-actions no-print"><button data-edit="${esc(x.id)}">✎ Edit</button><button data-delete="${esc(x.id)}">× Delete</button></div></article>`).join(''):'<div class="empty-day">No entries scheduled</div>'}</div></div>`}).join('');const sorted=[...data].sort((a,b)=>DAYS.indexOf(a.day)-DAYS.indexOf(b.day)||a.startTime.localeCompare(b.startTime));document.getElementById('listBody').innerHTML=sorted.length?sorted.map(x=>`<tr><td>${x.day}</td><td>${fmt(x.startTime)} – ${fmt(x.endTime)}</td><td><strong>${esc(x.subject)}</strong></td><td>${esc(x.room||'—')}</td><td>${esc(x.teacher||'—')}</td><td class="no-print"><button class="btn small" data-edit="${esc(x.id)}">Edit</button> <button class="btn small danger" data-delete="${esc(x.id)}">Delete</button></td></tr>`).join(''):'<tr><td colspan="6" class="empty-state">No matching entries.</td></tr>';}
+function renderDashboard(){const total=timetableData.length,hours=timetableData.reduce((s,x)=>s+duration(x),0),days=new Set(timetableData.map(x=>x.day)).size,todayName=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];document.getElementById('statTotal').textContent=total;document.getElementById('statHours').textContent=`${Number(hours.toFixed(1))}h`;document.getElementById('statDays').textContent=days;document.getElementById('statToday').textContent=timetableData.filter(x=>x.day===todayName).length;const next=[...timetableData].sort((a,b)=>DAYS.indexOf(a.day)-DAYS.indexOf(b.day)||a.startTime.localeCompare(b.startTime)).slice(0,5);document.getElementById('dashboardSchedule').innerHTML=next.length?`<div class="table-wrap"><table class="table"><thead><tr><th>Day</th><th>Time</th><th>Activity</th></tr></thead><tbody>${next.map(x=>`<tr><td>${x.day.slice(0,3)}</td><td>${fmt(x.startTime)}</td><td><strong>${esc(x.subject)}</strong><br><span class="muted">${esc(x.room||'No room added')}</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty-state"><div class="big">▤</div><strong>No schedule entries yet</strong><p>Add your first class or task to get started.</p><button class="btn primary" data-goto="add">＋ Add entry</button></div>';}
+function renderReports(){const max=Math.max(1,...DAYS.map(d=>timetableData.filter(x=>x.day===d).reduce((s,x)=>s+duration(x),0)));document.getElementById('dayBars').innerHTML=DAYS.map(d=>{const h=timetableData.filter(x=>x.day===d).reduce((s,x)=>s+duration(x),0);return `<div class="bar-row"><span>${d.slice(0,3)}</span><div class="bar"><span style="width:${Math.min(100,h/max*100)}%"></span></div><strong>${Number(h.toFixed(1))}h</strong></div>`}).join('');}
+function renderAll(){renderTimetable();renderDashboard();renderReports();document.getElementById('savedCount').textContent=`${timetableData.length} entries saved in this browser using local storage.`;}
+function resetForm(){document.getElementById('entryForm').reset();document.getElementById('entryId').value='';document.getElementById('startTime').value='09:00';document.getElementById('endTime').value='10:00';document.getElementById('formHeading').textContent='Add class or task';}
+function editEntry(id){const x=timetableData.find(e=>e.id===id);if(!x)return;document.getElementById('entryId').value=x.id;document.getElementById('subjectName').value=x.subject;document.getElementById('entryDay').value=x.day;document.getElementById('startTime').value=x.startTime;document.getElementById('endTime').value=x.endTime;document.getElementById('roomLocation').value=x.room;document.getElementById('teacherNotes').value=x.teacher;document.getElementById('entryColor').value=x.color;document.getElementById('formHeading').textContent='Edit class or task';go('add');}
+document.getElementById('cancelForm').addEventListener('click',()=>{resetForm();go('timetable')});
+document.getElementById('entryForm').addEventListener('submit',e=>{e.preventDefault();const id=document.getElementById('entryId').value,subject=document.getElementById('subjectName').value.trim(),day=document.getElementById('entryDay').value,startTime=document.getElementById('startTime').value,endTime=document.getElementById('endTime').value;if(!subject){toast('Please enter a subject or task name.');return;}if(!startTime||!endTime||startTime>=endTime){toast('End time must be later than start time.');return;}const item={id:id||Date.now().toString(),subject,day,startTime,endTime,room:document.getElementById('roomLocation').value.trim(),teacher:document.getElementById('teacherNotes').value.trim(),color:document.getElementById('entryColor').value};if(id){const i=timetableData.findIndex(x=>x.id===id);if(i>=0)timetableData[i]=item;}else timetableData.push(item);saveData();resetForm();toast(id?'Entry updated successfully.':'Entry saved successfully.');go('timetable');});
+function askConfirm(title,message,fn){document.getElementById('confirmTitle').textContent=title;document.getElementById('confirmMessage').textContent=message;pendingConfirm=fn;document.getElementById('confirmBackdrop').style.display='flex';}
+function closeConfirm(){document.getElementById('confirmBackdrop').style.display='none';pendingConfirm=null;}
+document.getElementById('confirmCancel').addEventListener('click',closeConfirm);document.getElementById('confirmBackdrop').addEventListener('click',e=>{if(e.target.id==='confirmBackdrop')closeConfirm()});document.getElementById('confirmYes').addEventListener('click',()=>{if(pendingConfirm)pendingConfirm();closeConfirm();});
+function deleteEntry(id){const x=timetableData.find(e=>e.id===id);askConfirm('Delete this entry?',`Remove "${x?.subject||'this entry'}" from your timetable?`,()=>{timetableData=timetableData.filter(e=>e.id!==id);saveData();toast('Entry deleted.');});}
+function clearAll(){if(!timetableData.length){toast('Your timetable is already empty.');return;}askConfirm('Clear all entries?','This removes every saved timetable entry from this browser.',()=>{timetableData=[];saveData();toast('All entries cleared.');});}
+document.getElementById('clearAllBtn').addEventListener('click',clearAll);
+function downloadFile(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Download started.');}
+function downloadJson(){downloadFile('timecraft-backup.json',JSON.stringify(timetableData,null,2),'application/json');}
+function downloadCsv(){const rows=[['Subject','Day','Start Time','End Time','Room','Teacher','Color'],...timetableData.map(x=>[x.subject,x.day,x.startTime,x.endTime,x.room,x.teacher,x.color])];const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');downloadFile('timecraft-timetable.csv',csv,'text/csv;charset=utf-8;');}
+document.getElementById('downloadJson').addEventListener('click',downloadJson);document.getElementById('exportFromSettings').addEventListener('click',downloadJson);document.getElementById('downloadCsv').addEventListener('click',downloadCsv);document.getElementById('printBtn').addEventListener('click',()=>{document.getElementById('searchInput').value='';document.getElementById('dayFilter').value='All';setView('grid');go('timetable');setTimeout(()=>window.print(),150)});
+document.getElementById('importFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const parsed=JSON.parse(await file.text());if(!Array.isArray(parsed))throw new Error('Invalid format');const items=validateEntries(parsed);if(parsed.length>0&&items.length===0)throw new Error('No valid entries');if(items.length<parsed.length){toast(`Skipped ${parsed.length-items.length} invalid entries in the backup.`);}askConfirm('Import backup?',`Import ${items.length} valid entries? This replaces the current timetable.`,()=>{timetableData=items;saveData();toast('Backup imported.');});}catch(err){toast('Could not import this file. Please choose a valid TimeCraft JSON backup.');}finally{e.target.value='';}});
+function localReview(){const result=document.getElementById('reviewResult');if(!timetableData.length){result.textContent='Your timetable is empty. Add some classes or tasks, then run the review again.';result.style.display='block';return;}const lines=[],hours=timetableData.reduce((s,x)=>s+duration(x),0);lines.push(`Weekly workload: ${hours.toFixed(1)} hours across ${new Set(timetableData.map(x=>x.day)).size} days.`);DAYS.forEach(day=>{const arr=timetableData.filter(x=>x.day===day).sort((a,b)=>a.startTime.localeCompare(b.startTime));if(arr.length>5)lines.push(`${day}: ${arr.length} entries scheduled; consider adding breaks.`);let furthest=null;for(const item of arr){if(furthest&&item.startTime<furthest.endTime)lines.push(`Possible time overlap on ${day}: "${furthest.subject}" and "${item.subject}".`);if(!furthest||item.endTime>furthest.endTime)furthest=item;}});const busiest=DAYS.map(d=>({d,h:timetableData.filter(x=>x.day===d).reduce((s,x)=>s+duration(x),0)})).sort((a,b)=>b.h-a.h)[0];if(busiest?.h)lines.push(`Busiest day: ${busiest.d} (${busiest.h.toFixed(1)} hours).`);if(!lines.some(x=>x.includes('overlap')))lines.push('No overlapping entries detected by the basic time check.');lines.push('Tip: leave short breaks between long study sessions and review your workload weekly.');result.textContent=lines.join('\n');result.style.display='block';}
+document.getElementById('localReviewBtn').addEventListener('click',localReview);document.getElementById('reviewBtn').addEventListener('click',localReview);
+document.getElementById('generateBtn').addEventListener('click',()=>{const text=document.getElementById('aiPromptInput').value.trim(),out=document.getElementById('generateResult');out.style.display='block';out.textContent=text?'AI generation is not connected yet. To make this work reliably, connect a backend endpoint that calls Gemini securely; do not place an API key in this HTML file. Your prompt has not been sent or saved.':'Please describe your weekly schedule first.';});
+let latestReportText='';
+document.getElementById('supportForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const category=document.getElementById('reportType').value,title=document.getElementById('reportTitle').value.trim(),details=document.getElementById('reportDetails').value.trim(),contact=document.getElementById('reportContact').value.trim();
+  const lines=['TimeCraft — Problem Report',`Date: ${new Date().toLocaleString()}`,`Category: ${category}`,`Title: ${title}`,'',`Details:\n${details}`];
+  if(contact)lines.push('',`Contact: ${contact}`);
+  if(document.getElementById('includeTechInfo').checked)lines.push('',`Browser: ${navigator.userAgent}`,`Page: ${location.href}`,`Screen: ${screen.width}x${screen.height}`,`Timetable entries: ${timetableData.length}`);
+  latestReportText=lines.join('\n');
+  const status=document.getElementById('reportStatus');status.textContent='Report draft created. It has not been sent anywhere. Download it or copy the text, then share it with the project owner/support channel.';status.style.display='block';document.getElementById('reportActions').style.display='flex';
+});
+document.getElementById('downloadReport').addEventListener('click',()=>{if(latestReportText)downloadFile('timecraft-problem-report.txt',latestReportText,'text/plain;charset=utf-8');});
+document.getElementById('copyReport').addEventListener('click',async()=>{if(!latestReportText)return;try{await navigator.clipboard.writeText(latestReportText);toast('Report copied to clipboard.');}catch(e){downloadFile('timecraft-problem-report.txt',latestReportText,'text/plain;charset=utf-8');toast('Clipboard unavailable; report downloaded instead.');}});
+// Handle dynamically rendered Edit/Delete controls and all in-page navigation once.
+document.addEventListener('click',function(event){
+  const target=event.target;
+  if(!(target instanceof Element))return;
+  const edit=target.closest('[data-edit]');
+  if(edit){editEntry(edit.dataset.edit);return;}
+  const del=target.closest('[data-delete]');
+  if(del){deleteEntry(del.dataset.delete);return;}
+  const goto=target.closest('[data-goto]');
+  if(goto){if(goto.dataset.goto==='add')resetForm();go(goto.dataset.goto);}
+});
+
+// Start only after the document is ready; surface any unexpected runtime issue.
+function startTimeCraft(){
+  try {
+    renderAll();
+    // Click delegation is registered once below, outside startup/rendering.
+  } catch (error) {
+    console.error('TimeCraft startup error:', error);
+    toast('TimeCraft had a startup error. Refresh the page; details are in the browser console.');
+  }
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', startTimeCraft, {once:true});
+else startTimeCraft();
+window.addEventListener('error', function(event){console.error('TimeCraft error:',event.error||event.message);});
+
+// Local demo authentication layer: edit these constants to change the fixed admin login.
+const TIMECraft_ADMIN_USERNAME = 'admin';
+const TIMECraft_ADMIN_PASSWORD = 'Admin@12345';
+const TIMECraft_USERS_KEY = 'timecraft_registered_users_v1';
+let tcAuthRole = 'admin';
+let tcAuthMode = 'login';
+let tcCurrentUser = null;
+let tcCurrentFullName = '';
+function tcUsersLoad(){try{const v=JSON.parse(localStorage.getItem(TIMECraft_USERS_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return [];}}
+function tcUsersSave(users){localStorage.setItem(TIMECraft_USERS_KEY,JSON.stringify(users));}
+function tcSetAuthRole(role){
+  tcAuthRole=role;tcAuthMode='login';
+  document.getElementById('authAdminTab').classList.toggle('active',role==='admin');
+  document.getElementById('authUserTab').classList.toggle('active',role==='user');
+  document.getElementById('userAuthModes').style.display=role==='user'?'grid':'none';
+  tcUpdateAuthForm();
+}
+function tcSetAuthMode(mode){tcAuthMode=mode;tcUpdateAuthForm();}
+function tcUpdateAuthForm(){
+  const isRegister=tcAuthRole==='user'&&tcAuthMode==='register';
+  document.getElementById('authHeading').textContent=tcAuthRole==='admin'?'Admin Login':(isRegister?'Create User Account':'User Login');
+  document.getElementById('authSub').textContent=tcAuthRole==='admin'?'Sign in with the fixed administrator account.':(isRegister?'Register with your username, full name and password.':'Sign in with your registered user account.');
+  document.getElementById('authNameField').style.display=isRegister?'grid':'none';
+  document.getElementById('authConfirmField').style.display=isRegister?'grid':'none';
+  document.getElementById('authFullName').required=isRegister;
+  document.getElementById('authConfirmPassword').required=isRegister;
+  document.getElementById('authLoginMode').classList.toggle('active',tcAuthMode==='login');
+  document.getElementById('authRegisterMode').classList.toggle('active',tcAuthMode==='register');
+  document.getElementById('authSubmitBtn').textContent=tcAuthRole==='admin'?'Login as Admin':(isRegister?'Create User Account':'Login as User');
+  document.getElementById('authError').textContent='';
+}
+document.getElementById('authAdminTab').addEventListener('click',()=>tcSetAuthRole('admin'));
+document.getElementById('authUserTab').addEventListener('click',()=>tcSetAuthRole('user'));
+document.getElementById('authLoginMode').addEventListener('click',()=>tcSetAuthMode('login'));
+document.getElementById('authRegisterMode').addEventListener('click',()=>tcSetAuthMode('register'));
+function tcApplyPermissions(){
+  const admin=tcAuthRole==='admin';
+  document.getElementById('currentRoleChip').textContent=admin?'ADMIN':'USER';
+  document.getElementById('currentAvatar').textContent=(tcCurrentFullName||tcCurrentUser||'TC').trim().slice(0,2).toUpperCase();
+  document.querySelectorAll('[data-goto="add"],#topAdd,#entryForm .form-footer,#clearAllBtn,#importFile,#exportFromSettings,#downloadJson,#downloadCsv,#generateBtn').forEach(el=>{el.style.display=admin?'':'none';});
+  document.querySelectorAll('[data-edit],[data-delete]').forEach(el=>{el.style.display=admin?'':'none';});
+  // The add form and AI generation are administrator-only; users can view timetable/reports and run local review.
+  document.querySelectorAll('[data-page="add"],[data-page="ai-generate"]').forEach(el=>{el.style.display=admin?'':'none';});
+  if(!admin && document.getElementById('page-add').classList.contains('active'))go('dashboard');
+  if(!admin && document.getElementById('page-ai-generate').classList.contains('active'))go('dashboard');
+  renderAll();
+}
+document.getElementById('authPanelForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const username=document.getElementById('authUsername').value.trim();
+  const password=document.getElementById('authPassword').value;
+  const error=document.getElementById('authError');
+  error.textContent='';
+  if(!/^[a-zA-Z0-9_-]{3,30}$/.test(username)){error.textContent='Username must be 3–30 characters (letters, numbers, _ or -).';return;}
+  if(tcAuthRole==='admin'){
+    if(tcAuthMode!=='login'){error.textContent='Admin account is fixed. Use Admin Login.';return;}
+    if(username!==TIMECraft_ADMIN_USERNAME||password!==TIMECraft_ADMIN_PASSWORD){error.textContent='Incorrect admin username or password.';return;}
+    tcCurrentUser=username;tcCurrentFullName='Administrator';
+  }else if(tcAuthMode==='register'){
+    const fullName=document.getElementById('authFullName').value.trim();
+    const confirm=document.getElementById('authConfirmPassword').value;
+    if(!fullName){error.textContent='Please enter your full name.';return;}
+    if(password.length<6){error.textContent='Password must be at least 6 characters.';return;}
+    if(password!==confirm){error.textContent='Password and confirm password do not match.';return;}
+    const users=tcUsersLoad();
+    if(username.toLowerCase()===TIMECraft_ADMIN_USERNAME.toLowerCase()){error.textContent='That username is reserved.';return;}
+    if(users.some(u=>u.username.toLowerCase()===username.toLowerCase())){error.textContent='Username already exists. Choose another.';return;}
+    users.push({username,fullName,password});tcUsersSave(users);
+    document.getElementById('authPassword').value='';document.getElementById('authConfirmPassword').value='';
+    tcSetAuthMode('login');error.textContent='Account created. Please log in.';return;
+  }else{
+    const user=tcUsersLoad().find(u=>u.username.toLowerCase()===username.toLowerCase()&&u.password===password);
+    if(!user){error.textContent='Incorrect user username or password.';return;}
+    tcCurrentUser=user.username;tcCurrentFullName=user.fullName||user.username;
+  }
+  document.getElementById('authLayer').style.display='none';
+  document.getElementById('timeCraftApp').style.display='grid';
+  document.getElementById('authLogoutBtn').style.display='inline-flex';
+  tcApplyPermissions();
+  toast('Welcome, '+(tcCurrentFullName||tcCurrentUser)+'.');
+});
+document.getElementById('authLogoutBtn').addEventListener('click',()=>{
+  tcCurrentUser=null;tcCurrentFullName='';document.getElementById('timeCraftApp').style.display='none';document.getElementById('authLayer').style.display='flex';document.getElementById('authPanelForm').reset();tcSetAuthRole('admin');
+});
+tcSetAuthRole('admin');
+
+</script>
+</body>
+</html>
